@@ -57,14 +57,15 @@ const Scanner = () => {
     if (!incomingTarget) return;
 
     setTargetInput(incomingTarget);
-    setScanProfile(state.profile && scanProfiles.some(p => p.key === state.profile) ? state.profile : 'Quick');
+    const validProfile = state.profile && scanProfiles.some(p => p.key === state.profile) ? state.profile : 'Quick';
+    setScanProfile(validProfile);
 
     if (!state.autoStart || autoLaunchHandledRef.current || isRunning) return;
 
     autoLaunchHandledRef.current = true;
     startedFromScannerRef.current = true;
     setScannedDomain(incomingTarget);
-    startQueue([incomingTarget], state.profile ?? 'Standard');
+    startQueue([incomingTarget], validProfile);
     navigate(location.pathname, { replace: true, state: null });
   }, [isRunning, location.pathname, location.state, navigate, setScannedDomain, startQueue]);
 
