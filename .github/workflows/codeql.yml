@@ -14,8 +14,22 @@ name: "CodeQL Advanced"
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.gitignore'
+      - '.dockerignore'
+      - '.graphifyignore'
+      - '.agents/**'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.gitignore'
+      - '.dockerignore'
+      - '.graphifyignore'
+      - '.agents/**'
   schedule:
     - cron: '25 4 * * 0'
 

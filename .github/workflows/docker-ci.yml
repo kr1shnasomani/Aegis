@@ -16,6 +16,7 @@ on:
       - 'frontend/**'
       - 'docker-compose.yml'
       - 'requirements.txt'
+      - '.github/workflows/docker-ci.yml'
 
 jobs:
   build:

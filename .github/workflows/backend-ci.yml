@@ -6,6 +6,9 @@ on:
     paths:
       - 'backend/**'
       - 'tests/**'
+      - 'scripts/**'
+      - 'simulation/**'
+      - 'migrations/**'
       - 'requirements.txt'
       - '.github/workflows/backend-ci.yml'
   pull_request:
@@ -13,7 +16,11 @@ on:
     paths:
       - 'backend/**'
       - 'tests/**'
+      - 'scripts/**'
+      - 'simulation/**'
+      - 'migrations/**'
       - 'requirements.txt'
+      - '.github/workflows/backend-ci.yml'
 
 jobs:
   test:

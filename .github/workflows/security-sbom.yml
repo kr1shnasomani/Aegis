@@ -3,6 +3,11 @@ name: Security SBOM Generation
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'requirements.txt'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - '.github/workflows/security-sbom.yml'
   release:
     types: [published]
 

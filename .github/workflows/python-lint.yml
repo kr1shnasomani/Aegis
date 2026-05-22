@@ -8,6 +8,8 @@ on:
       - 'tests/**'
       - 'scripts/**'
       - 'simulation/**'
+      - 'migrations/**'
+      - '.github/workflows/python-lint.yml'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -15,6 +17,8 @@ on:
       - 'tests/**'
       - 'scripts/**'
       - 'simulation/**'
+      - 'migrations/**'
+      - '.github/workflows/python-lint.yml'
 
 jobs:
   lint:
