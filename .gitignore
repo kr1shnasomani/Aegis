@@ -45,6 +45,7 @@ simulation/results/*
 !simulation/results/.gitkeep
 
 .aegis-runtime/
+graphify-out/
 
 
 
