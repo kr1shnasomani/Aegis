@@ -47,8 +47,8 @@ Aegis continuously discovers assets, evaluates their cryptographic posture, and 
 
 Aegis supports scan profiles that trade off speed vs depth.
 
-1. **Fast Validation:** `Standard + Bounded Port Scan + No Enumeration`
-2. **Balanced Discovery:** `Standard + Bounded Port Scan + Full Enumeration`
+1. **Fast Validation:** `Quick + Bounded Port Scan + No Enumeration`
+2. **Balanced Discovery:** `Deep + Bounded Port Scan + Full Enumeration`
 3. **Full-Fledge Deep Scan:** `Deep + Full Port Scan + Full Enumeration`
 4. **PQC-Focused Audit:** `PQC Focus + Bounded Port Scan + No Enumeration`
 

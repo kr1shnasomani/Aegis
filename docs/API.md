@@ -68,7 +68,7 @@ Request body:
 ```json
 {
   "target": "example.com",
-  "scan_profile": "Standard + Full Port Scan",
+  "scan_profile": "Quick + Full Port Scan",
   "initiated_by": "frontend_scan_queue"
 }
 ```
@@ -285,7 +285,7 @@ Create a scan:
 ```bash
 curl -s -X POST http://localhost:8000/api/v1/scan \
   -H 'content-type: application/json' \
-  -d '{"target":"example.com","scan_profile":"Standard","initiated_by":"manual"}' | jq
+  -d '{"target":"example.com","scan_profile":"Quick","initiated_by":"manual"}' | jq
 ```
 
 Fetch results:

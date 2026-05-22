@@ -98,22 +98,20 @@ Aegis supports multiple scan variations through `scan_profile`.
 
 Use this for quick checks, parity validation, and CI smoke runs.
 
-- Profile example: `Standard + Bounded Port Scan + No Enumeration`
+- Profile example: `Quick + Bounded Port Scan + No Enumeration`
 - Behavior: scans bounded ports and only root/www hostnames
 - Typical outcome: fast completion with deterministic top-level posture
 
 Terminal/API example:
 ```bash
-curl -s -X POST http://localhost:8000/api/v1/scan \
-	-H 'content-type: application/json' \
-	-d '{"target":"example.com","scan_profile":"Standard + Bounded Port Scan + No Enumeration"}'
+curl -X POST http://localhost:8000/api/v1/scan \
+	-H "Content-Type: application/json" \
+	-d '{"target":"example.com","scan_profile":"Quick + Bounded Port Scan + No Enumeration"}'
 ```
 
-### 2. Balanced Discovery
-
-Use this for routine production checks where broader hostname coverage is needed.
-
-- Profile example: `Standard + Bounded Port Scan + Full Enumeration`
+### Full Discovery Profile (Deep Scan)
+- Highly aggressive. Scans 1-65535 ports and subdomains.
+- Profile example: `Deep + Bounded Port Scan + Full Enumeration`
 - Behavior: bounded ports, broad hostname expansion
 - Notes: runtime depends on DNS size and CDN sprawl
 
