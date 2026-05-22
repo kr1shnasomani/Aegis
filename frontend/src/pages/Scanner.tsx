@@ -11,11 +11,11 @@ import { cn } from '@/lib/utils';
 
 const scanProfiles = [
   {
-    key: 'Standard',
-    title: 'Standard Scan',
-    tagline: 'The All-Rounder',
-    description: 'Balanced coverage. Scans standard ports (HTTP, HTTPS, etc) and performs moderate subdomain enumeration.',
-    features: ['Bounded port scan', 'Basic subdomain discovery', 'Core TLS posture'],
+    key: 'Quick',
+    title: 'Quick Scan',
+    tagline: 'Lightning Fast',
+    description: 'Results in 10-30 seconds. Scans standard ports (HTTP, HTTPS) for the exact domain you entered without aggressive subdomain hunting.',
+    features: ['Bounded port scan', 'Exact domain only', 'Core TLS posture'],
   },
   {
     key: 'Deep',
@@ -36,7 +36,7 @@ const scanProfiles = [
 
 const Scanner = () => {
   const [targetInput, setTargetInput] = useState('');
-  const [scanProfile, setScanProfile] = useState<string>('Standard');
+  const [scanProfile, setScanProfile] = useState<string>('Quick');
   const startedFromScannerRef = useRef(false);
   const lastRedirectedScanIdRef = useRef<string | null>(null);
 
@@ -64,7 +64,7 @@ const Scanner = () => {
     if (!incomingTarget) return;
 
     setTargetInput(incomingTarget);
-    setScanProfile(state.profile && scanProfiles.some(p => p.key === state.profile) ? state.profile : 'Standard');
+    setScanProfile(state.profile && scanProfiles.some(p => p.key === state.profile) ? state.profile : 'Quick');
 
     if (!state.autoStart || autoLaunchHandledRef.current || isRunning) return;
 

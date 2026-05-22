@@ -147,14 +147,16 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
     def _profile_requests_full_port_scan(self, profile: str | None) -> bool:
         if not profile:
             return False
+        normalized = profile.lower()
         # "Deep" inherently maps to full port scan now.
-        return "Deep" in profile or "Full Port Scan" in profile
+        return "deep" in normalized or "full port scan" in normalized
 
     def _resolve_skip_enumeration(self, profile: str | None) -> bool:
         if not profile:
             return True
-        # "Deep" and "Standard" imply enumeration. "PQC Focus" skips it.
-        if "Deep" in profile or "Standard" in profile or "Full Enumeration" in profile:
+        normalized = profile.lower()
+        # "Deep" implies enumeration. "Quick" and "PQC Focus" skip it.
+        if "deep" in normalized or "full enumeration" in normalized:
             return False
         return True
 
