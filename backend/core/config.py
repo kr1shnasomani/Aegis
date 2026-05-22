@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     # ── Qdrant ──────────────────────────────────────────
     QDRANT_URL: str = "http://qdrant:6333"
     QDRANT_COLLECTION_NAME: str = "aegis_nist_docs"
-    DOCS_SOURCE_DIR: str = "docs/nist"
+    DOCS_SOURCE_DIR: str = "corpus/nist"
 
     # ── LLM / RAG ──────────────────────────────────────
     EMBEDDING_PROVIDER_MODE: str = "local"

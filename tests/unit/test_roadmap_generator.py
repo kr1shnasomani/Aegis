@@ -55,7 +55,7 @@ def test_deterministic_fallback_mode_works_without_cloud_llm() -> None:
             metadata={
                 "title": "FIPS 203",
                 "section": "Hybrid Deployment",
-                "path": "docs/nist/fips203.md",
+                "path": "corpus/nist/fips203.md",
             },
         ),
     )
@@ -89,7 +89,7 @@ def test_cloud_mode_still_uses_deterministic_template() -> None:
             chunk_id="chunk-1",
             text="Preserve AES-256-GCM while migrating.",
             score=0.8,
-            metadata={"title": "Roadmap", "path": "docs/nist/roadmap.txt"},
+            metadata={"title": "Roadmap", "path": "corpus/nist/roadmap.txt"},
         ),
     )
 

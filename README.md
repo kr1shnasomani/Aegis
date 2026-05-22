@@ -96,8 +96,8 @@ Aegis/
 ├── frontend/            # React + Vite UI with Tailwind CSS
 │   └── src/components/  # Interactive D3/Force-Graph visualizations
 ├── docker/              # Infrastructure-as-Code (OQS builds, Graph DB init)
-├── docs/                # Intelligence corpus (NIST Standards, FIPS PDFs)
-├── documentations/      # Extended architectural & API references
+├── corpus/                # Intelligence corpus (NIST Standards, FIPS PDFs)
+├── docs/      # Extended architectural & API references
 ├── migrations/          # Alembic relational database migrations
 ├── scripts/             # Data ingestion & validation utilities
 ├── simulation/          # Standalone terminal-based scan testing utilities
@@ -113,10 +113,10 @@ For detailed technical guides and references, please see the specific documentat
 | Documentation | Purpose |
 | :--- | :--- |
 | 🛠️ [**SETUP.md**](./SETUP.md) | Universal installation, environment configuration, and startup guide for running Aegis. |
-| 📡 [**documentations/API.md**](./documentations/API.md) | Comprehensive backend REST endpoint documentation and cURL integration examples. |
-| 💾 [**documentations/DATABASE.md**](./documentations/DATABASE.md) | Detailed schema mapping for PostgreSQL, Apache AGE (Graph), and Qdrant. |
-| 🧠 [**documentations/CONTEXT.md**](./documentations/CONTEXT.md) | Technical context, core principles, and developer rules for the codebase. |
-| 🎯 [**documentations/SOLUTION.md**](./documentations/SOLUTION.md) | Strategic product framing, threat models, and business problem statement. |
+| 📡 [**docs/API.md**](./docs/API.md) | Comprehensive backend REST endpoint documentation and cURL integration examples. |
+| 💾 [**docs/DATABASE.md**](./docs/DATABASE.md) | Detailed schema mapping for PostgreSQL, Apache AGE (Graph), and Qdrant. |
+| 🧠 [**docs/CONTEXT.md**](./docs/CONTEXT.md) | Technical context, core principles, and developer rules for the codebase. |
+| 🎯 [**docs/SOLUTION.md**](./docs/SOLUTION.md) | Strategic product framing, threat models, and business problem statement. |
 
 ---
 

@@ -18,13 +18,13 @@ Core flow:
 Use these documents in this order:
 1. README.md
 2. SETUP.md
-3. documentations/API.md
-4. documentations/DATABASE.md
-5. documentations/CONTEXT.md
-6. documentations/SOLUTION.md
+3. docs/API.md
+4. docs/DATABASE.md
+5. docs/CONTEXT.md
+6. docs/SOLUTION.md
 
 Hard rule:
-- Never modify documentations/SOLUTION.md unless explicitly asked by the user.
+- Never modify docs/SOLUTION.md unless explicitly asked by the user.
 
 ## 3) Runtime and Environment Reality
 

@@ -17,7 +17,7 @@ services:
       - AEGIS_ENUM_FALLBACK_MAX_HOSTNAMES=1200
     volumes:
       - .:/app
-    command: sh -c "alembic upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: sh -c "alembic upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       postgres:
         condition: service_healthy
