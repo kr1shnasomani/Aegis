@@ -1,0 +1,40 @@
+name: Security SBOM Generation
+
+on:
+  push:
+    branches: ["main"]
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  generate-sbom:
+    name: Generate CycloneDX SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate Backend SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: ./backend
+          format: cyclonedx-json
+          file: aegis-backend-sbom.json
+
+      - name: Generate Frontend SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: ./frontend
+          format: cyclonedx-json
+          file: aegis-frontend-sbom.json
+
+      - name: Upload SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: aegis-sboms
+          path: |
+            aegis-backend-sbom.json
+            aegis-frontend-sbom.json
