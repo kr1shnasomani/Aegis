@@ -459,7 +459,7 @@ On top of the base formula, Aegis applies additional penalties for certificate h
 - Risk = (0.45×1.00) + (0.35×1.00) + (0.10×0.50) + (0.10×0.40) = 0.89
 - **Q-Score = 11 — QUANTUM VULNERABLE**
 
-**example.com — Hybrid PQC key exchange:**
+**sc.com — Hybrid PQC key exchange:**
 - KEX: X25519+ML-KEM-768 → V_kex = 0.30
 - SIG: SHA256WithRSAEncryption → V_sig = 1.00
 - SYM: AES-128-GCM → V_sym = 0.50
@@ -467,7 +467,7 @@ On top of the base formula, Aegis applies additional penalties for certificate h
 - Risk = (0.45×0.30) + (0.35×1.00) + (0.10×0.50) + (0.10×0.10) = 0.545
 - **Q-Score = 45-46 — PQC TRANSITIONING**
 
-**demo.internal — Hybrid PQC with AES-256:**
+**discord.com — Hybrid PQC with AES-256:**
 - KEX: X25519+ML-KEM-768 → V_kex = 0.30
 - SIG: ECDSA → V_sig = 1.00
 - SYM: AES-256-GCM → V_sym = 0.05
@@ -539,7 +539,7 @@ flowchart TD
 **Tier assignment logic — the key design decision:**
 
 - **FULLY_QUANTUM_SAFE:** Every key exchange and signature algorithm passes NIST FIPS 203 and FIPS 204 checks. No classical components anywhere.
-- **PQC_TRANSITIONING:** At least one HYBRID is detected in KEX or SIG, and no classical-only FAIL exists. This tier correctly validates hybrid implementations (X25519+ML-KEM-768) as a legitimate migration step. A site like demo.internal with hybrid KEX and classical ECDSA signature lands here — not in Vulnerable. This reflects the reality that no major public CA issues ML-DSA certificates yet, so hybrid KEX is the maximum achievable state for most organisations.
+- **PQC_TRANSITIONING:** At least one HYBRID is detected in KEX or SIG, and no classical-only FAIL exists. This tier correctly validates hybrid implementations (X25519+ML-KEM-768) as a legitimate migration step. A site like discord.com with hybrid KEX and classical ECDSA signature lands here — not in Vulnerable. This reflects the reality that no major public CA issues ML-DSA certificates yet, so hybrid KEX is the maximum achievable state for most organisations.
 - **QUANTUM_VULNERABLE:** Any key exchange or signature algorithm is classical-only with no PQC component.
 
 The SYM dimension (AES-128 WARN, 3DES FAIL) contributes to the Q-Score but does not on its own push an asset into the Vulnerable tier. The symmetric dimension is correctly deprioritised relative to KEX and SIG.
@@ -621,7 +621,7 @@ Aegis generates a CycloneDX 1.6-compliant CBOM for every scanned asset. This is 
   "metadata": {
     "timestamp": "2026-04-12T10:30:00Z",
     "tools": [{ "name": "Aegis", "version": "1.0.0" }],
-    "component": { "type": "service", "name": "example.com:443" }
+    "component": { "type": "service", "name": "sc.com:443" }
   },
   "components": [{
     "type": "cryptographic-asset",
@@ -807,7 +807,7 @@ The Mission Control page supports three role-based views switchable via ViewRole
 
 ### Asset Network Graph
 
-The Asset Discovery Network Graph shows relationships between discovered assets and their infrastructure dependencies. When Aegis scans demo.internal and discovers it runs on Cloudflare infrastructure, the graph renders cloudflare.com as a connected node. Assets are coloured by tier — green for Elite-PQC, orange for Transitioning, red for Vulnerable. Filter buttons allow viewing only specific tiers.
+The Asset Discovery Network Graph shows relationships between discovered assets and their infrastructure dependencies. When Aegis scans discord.com and discovers it runs on Cloudflare infrastructure, the graph renders cloudflare.com as a connected node. Assets are coloured by tier — green for Elite-PQC, orange for Transitioning, red for Vulnerable. Filter buttons allow viewing only specific tiers.
 
 ---
 
