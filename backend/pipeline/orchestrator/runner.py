@@ -144,6 +144,20 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
                 "Failed retrieval runtime compatibility check; scans will continue with existing collection state."
             )
 
+    def _profile_requests_full_port_scan(self, profile: str | None) -> bool:
+        if not profile:
+            return False
+        # "Deep" inherently maps to full port scan now.
+        return "Deep" in profile or "Full Port Scan" in profile
+
+    def _resolve_skip_enumeration(self, profile: str | None) -> bool:
+        if not profile:
+            return True
+        # "Deep" and "Standard" imply enumeration. "PQC Focus" skips it.
+        if "Deep" in profile or "Standard" in profile or "Full Enumeration" in profile:
+            return False
+        return True
+
     # ── Public entry-point ────────────────────────────────────────────────────
 
     async def run_scan(self, *, scan_id: uuid.UUID, target: str) -> None:

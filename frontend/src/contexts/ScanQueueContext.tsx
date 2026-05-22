@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useState, useRef, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useRef, useCallback, ReactNode } from 'react';
 import { api } from '@/lib/api';
 
 export interface QueueItem {
@@ -35,7 +35,7 @@ interface ScanQueueContextType {
   removeQueueItem: (itemId: string) => void;
   toggleMinimize: () => void;
   setMinimized: (v: boolean) => void;
-  queueComplete: boolean;
+  queueComplete: 'success' | 'failed' | 'cancelled' | null;
 }
 
 const phases = ['Discovery', 'TLS Probing', 'PQC Classification', 'CBOM Generation', 'Certification'];
@@ -90,7 +90,7 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<ScanNotification[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
   const [latestCompletedScanId, setLatestCompletedScanId] = useState<string | null>(null);
-  const [queueComplete, setQueueComplete] = useState(false);
+  const [queueComplete, setQueueComplete] = useState<'success' | 'failed' | 'cancelled' | null>(null);
 
   const queueRef = useRef<QueueItem[]>([]);
   const cancelledRef = useRef(false);
@@ -117,7 +117,7 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
     setQueue(next);
   }, []);
 
-  const finishQueue = useCallback((emitCompleteToast: boolean) => {
+  const finishQueue = useCallback((status: 'success' | 'failed' | 'cancelled' | false) => {
     activeItemIdRef.current = null;
     runningRef.current = false;
     setIsRunning(false);
@@ -128,11 +128,11 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
       queueCompleteTimeoutRef.current = null;
     }
 
-    if (emitCompleteToast) {
+    if (status !== false) {
       updateQueue([]);
-      setQueueComplete(true);
-      addLog('Queue complete');
-      queueCompleteTimeoutRef.current = setTimeout(() => setQueueComplete(false), 4000);
+      setQueueComplete(status);
+      addLog(`Queue complete: ${status}`);
+      queueCompleteTimeoutRef.current = setTimeout(() => setQueueComplete(null), 4000);
     }
   }, [addLog, updateQueue]);
 
@@ -301,7 +301,7 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
         activeItemIdRef.current = null;
 
         if (cancelledRef.current) {
-          finishQueue(false);
+          finishQueue('cancelled');
           return;
         }
 
@@ -311,7 +311,15 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
 
-        finishQueue(true);
+        let overallStatus: 'success' | 'failed' | 'cancelled' = 'success';
+        const hasFailed = queueRef.current.some((i) => i.status === 'failed');
+        const hasSuccess = queueRef.current.some((i) => i.status === 'done');
+        const hasCancelled = queueRef.current.some((i) => i.status === 'cancelled');
+
+        if (hasFailed) overallStatus = 'failed';
+        else if (hasCancelled && !hasSuccess) overallStatus = 'cancelled';
+
+        finishQueue(overallStatus);
       }
     })();
   }, [addLog, finishQueue, updateQueue]);
@@ -324,7 +332,7 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
 
     cancelledRef.current = false;
     setScanProfile(profile);
-    setQueueComplete(false);
+    setQueueComplete(null);
 
     if (queueCompleteTimeoutRef.current) {
       clearTimeout(queueCompleteTimeoutRef.current);
@@ -367,7 +375,7 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
         : item
     )));
     addLog('Queue cancelled');
-    finishQueue(false);
+    finishQueue('cancelled');
   }, [addLog, finishQueue, updateQueue]);
 
   const removeQueueItem = useCallback((itemId: string) => {

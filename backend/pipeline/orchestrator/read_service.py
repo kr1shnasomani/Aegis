@@ -15,7 +15,7 @@ from backend.models.crypto_assessment import CryptoAssessment
 from backend.models.discovered_asset import DiscoveredAsset
 from backend.models.certificate_chain import CertificateChain
 from backend.models.dns_record import DNSRecord
-from backend.models.enums import ScanStatus, ServiceType
+from backend.models.enums import ScanStatus, ServiceType, ComplianceTier
 from backend.models.scan_job import ScanJob
 from backend.models.scan_event import ScanEvent
 from backend.models.remediation_action import RemediationAction
@@ -742,10 +742,11 @@ class ScanReadService:
             "quick": "quick" in normalized,
             "deep": "deep" in normalized,
             "pqc_focus": "pqc focus" in normalized,
-            "full_port_scan": "full port scan" in normalized,
+            "standard": "standard" in normalized,
+            "full_port_scan": "full port scan" in normalized or "deep" in normalized,
             "bounded_port_scan": "bounded port scan" in normalized,
-            "full_enumeration": "full enumeration" in normalized,
-            "no_enumeration": "no enumeration" in normalized,
+            "full_enumeration": "full enumeration" in normalized or "deep" in normalized or "standard" in normalized,
+            "no_enumeration": "no enumeration" in normalized or "pqc focus" in normalized,
         }
 
     def _build_eta_payload(

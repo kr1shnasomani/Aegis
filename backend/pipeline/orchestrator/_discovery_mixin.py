@@ -15,6 +15,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
+import ipaddress
+import socket
 import uuid
 from collections import defaultdict
 from typing import Any, Sequence, TYPE_CHECKING
@@ -33,6 +36,7 @@ from backend.discovery import (
 )
 from backend.discovery.dns_enumerator import DNSEnumerationError
 from backend.models.enums import ServiceType
+from backend.repositories import DNSRecordRepository
 
 from .models import _DiscoveryExecution, COMMON_ENUMERATION_PREFIXES
 from .serializers import _artifact_key_from_tls_result
@@ -940,4 +944,45 @@ class DiscoveryMixin:
                     continue
                 ip_to_hostnames.setdefault(ip_address, set()).add(hostname)
         return ip_to_hostnames
+
+    def _select_tls_hostnames(self, scope: AuthorizedScope, hostnames: set[str]) -> list[str]:
+        if not hostnames:
+            return []
+
+        normalized = sorted(
+            {hostname.strip().lower().rstrip(".") for hostname in hostnames if hostname}
+        )
+        if len(normalized) <= self.max_tls_sni_targets_per_ip:
+            return normalized
+
+        prioritized: list[str] = []
+        if scope.domain:
+            root = scope.domain.strip().lower().rstrip(".")
+            www = f"www.{root}"
+            for candidate in (root, www):
+                if candidate in normalized and candidate not in prioritized:
+                    prioritized.append(candidate)
+
+        for hostname in normalized:
+            if hostname in prioritized:
+                continue
+            prioritized.append(hostname)
+            if len(prioritized) >= self.max_tls_sni_targets_per_ip:
+                break
+
+        return prioritized[: self.max_tls_sni_targets_per_ip]
+
+    @staticmethod
+    def _augment_hostname_candidates(base_domain: str, hostnames: set[str]) -> int:
+        before = len(hostnames)
+        for prefix in COMMON_ENUMERATION_PREFIXES:
+            hostnames.add(f"{prefix}.{base_domain}")
+        return len(hostnames) - before
+
+    @staticmethod
+    def _format_enumeration_reason(exc: Exception) -> str:
+        reason = str(exc).strip()
+        if not reason:
+            return "unknown"
+        return reason[:180]
 
