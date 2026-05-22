@@ -6,12 +6,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
 from qdrant_client import QdrantClient
 
 from backend.core.config import Settings
 from backend.intelligence.retrieval import (
-    CorpusSetupError,
     RetrievalService,
     create_embedding_provider,
 )

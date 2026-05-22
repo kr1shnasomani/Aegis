@@ -15,18 +15,16 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import subprocess
 import os
 import uuid
 import re
-from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any, Sequence
 
 from sqlalchemy.exc import IntegrityError
+from .exceptions import ScanNotFoundError
 
 from backend.analysis import (
-    CertificateAnalyzer,
     HandshakeMetadataResolutionError,
     calculate_risk_score,
     generate_score_explanation,
@@ -34,22 +32,18 @@ from backend.analysis import (
     resolve_tls13_handshake_metadata,
 )
 from backend.analysis.constants import canonicalize_algorithm, lookup_vulnerability
-from backend.cbom import AssetCbomBundle, CycloneDxMapper
+from backend.cbom import AssetCbomBundle
 from backend.cert import CertificateRequest
-from backend.compliance import ComplianceInput, RulesEngine
-from backend.discovery import CertificateExtractor, TLSProbeResult
-from backend.models.asset_fingerprint import AssetFingerprint
-from backend.models.certificate_chain import CertificateChain
-from backend.models.crypto_assessment import CryptoAssessment
-from backend.models.discovered_asset import DiscoveredAsset
-from backend.models.enums import CertLevel, ComplianceTier, ServiceType
+from backend.compliance import ComplianceInput
+from backend.discovery import TLSProbeResult
+from backend.models.enums import CertLevel, ComplianceTier
 from backend.models.remediation_action import (
     RemediationAction,
     RemediationEffort,
     RemediationPriority,
     RemediationStatus,
 )
-from backend.intelligence import RagOrchestrator, RemediationInput
+from backend.intelligence import RemediationInput
 from backend.repositories import (
     AssetFingerprintRepository,
     CbomDocumentRepository,
@@ -58,17 +52,10 @@ from backend.repositories import (
     CryptoAssessmentRepository,
     DiscoveredAssetRepository,
     RemediationBundleRepository,
-    ScanJobRepository,
 )
 from .models import _AssessmentInputs
 from .serializers import (
-    _artifact_key_from_asset,
     build_asset_fingerprint_key,
-    extract_subject_cn,
-    select_latest_cbom,
-    select_latest_certificate,
-    serialize_assessment,
-    serialize_leaf_certificate,
 )
 
 logger = logging.getLogger(__name__)

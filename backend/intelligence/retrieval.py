@@ -31,6 +31,24 @@ from .embeddings import (
     create_embedding_provider,
 )
 
+__all__ = [
+    "CorpusChunk",
+    "IngestionSummary",
+    "RetrievedChunk",
+    "call_cloud_api",
+    "CohereEmbeddingProvider",
+    "FallbackEmbeddingProvider",
+    "JinaEmbeddingProvider",
+    "LocalDeterministicEmbeddingProvider",
+    "OpenRouterEmbeddingProvider",
+    "RetrievalError",
+    "create_embedding_provider",
+    "RetrievalService",
+    "CorpusSetupError",
+    "Settings",
+    "get_settings",
+]
+
 try:
     from langchain_core.documents import Document as LangChainDocument
 except ImportError:  # pragma: no cover

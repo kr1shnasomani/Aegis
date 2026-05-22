@@ -27,8 +27,10 @@ from backend.models.enums import ComplianceTier
 
 if TYPE_CHECKING:
     from backend.repositories.compliance_cert_repo import ComplianceCertificateRepository
+    from backend.models.discovered_asset import DiscoveredAsset
+    from backend.models.remediation_bundle import RemediationBundle
 
-from .asn1 import _OID_MAP, _encode_utf8_asn1, get_extension_payload, load_certificate
+from .asn1 import _OID_MAP, _encode_utf8_asn1
 from .exceptions import (
     CertificateIssuanceError,
     ComplianceTierMismatchError,

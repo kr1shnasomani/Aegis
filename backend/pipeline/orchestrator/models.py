@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from backend.models.enums import ScanStatus
+from backend.discovery.types import AggregatedAsset, PortFinding, ValidatedHostname, TLSProbeResult
 
 
 MAX_SCAN_RUNTIME_EVENTS = 60

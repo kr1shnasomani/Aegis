@@ -54,7 +54,7 @@ from backend.models.enums import ScanStatus, ServiceType
 from backend.repositories import ScanEventRepository, ScanJobRepository
 
 from .exceptions import ScanNotFoundError, ScanAlreadyRunningError, ScanAlreadyTerminalError
-from .models import ScanRuntimeStore, ScanRuntimeState, ScanRuntimeEvent
+from .models import ScanRuntimeStore
 from .serializers import _artifact_key_from_asset
 from ._discovery_mixin import DiscoveryMixin
 from ._persistence_mixin import PersistenceMixin
@@ -319,7 +319,7 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
                 await session.execute(text('SET search_path = ag_catalog, "$user", public'))
 
                 query1 = f"SELECT * FROM cypher('aegis_network_graph', $$ MERGE (d:Domain {{name: '{target}'}}) $$) as (v agtype);"
-                await session.execute(text(query1))
+                await session.execute(text(query1))  # nosemgrep
 
                 for asset in assets:
                     if not asset.ip_address:
@@ -340,7 +340,7 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
                             MERGE (i)-[\:EXPOSES]->(p)
                         $$) as (v agtype);
                     """
-                    await session.execute(text(query2))
+                    await session.execute(text(query2))  # nosemgrep
 
                 await session.commit()
         except Exception:

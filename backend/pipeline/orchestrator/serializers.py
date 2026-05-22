@@ -13,9 +13,11 @@ from backend.models.certificate_chain import CertificateChain
 from backend.models.crypto_assessment import CryptoAssessment
 from backend.models.discovered_asset import DiscoveredAsset
 from backend.models.dns_record import DNSRecord
-from backend.models.enums import ScanStatus, ServiceType
+from backend.models.enums import ServiceType
 from backend.models.remediation_action import RemediationAction
 from backend.models.scan_event import ScanEvent
+from backend.models.asset_fingerprint import AssetFingerprint
+from backend.discovery.types import TLSProbeResult
 
 from .models import ScanRuntimeEvent
 

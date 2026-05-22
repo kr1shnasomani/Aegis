@@ -18,27 +18,18 @@ import asyncio
 import ipaddress
 import json
 import logging
-import re
 import socket
 import uuid
-from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any, Sequence
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from backend.discovery import AggregatedAsset, PortFinding, ValidatedHostname
 from backend.models.discovered_asset import DiscoveredAsset
-from backend.models.dns_record import DNSRecord
-from backend.models.enums import ServiceType
 from backend.repositories import (
-    AssetFingerprintRepository,
-    CertificateChainRepository,
-    DNSRecordRepository,
     DiscoveredAssetRepository,
-    ScanJobRepository,
 )
-from .serializers import _normalize_hostname
 
 logger = logging.getLogger(__name__)
 

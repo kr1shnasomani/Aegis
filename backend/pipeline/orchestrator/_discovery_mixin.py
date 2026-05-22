@@ -20,17 +20,14 @@ import ipaddress
 import socket
 import uuid
 from collections import defaultdict
-from typing import Any, Sequence, TYPE_CHECKING
+from typing import Sequence, TYPE_CHECKING
 
 from backend.discovery import (
-    AggregatedAsset,
     AuthorizedScope,
     PortFinding,
     TLSProbeResult,
     TLSScanTarget,
     ValidatedHostname,
-    VPNProbe,
-    APIInspector,
     URLProbeTarget,
     aggregate_assets,
 )
@@ -42,7 +39,7 @@ from .models import _DiscoveryExecution, COMMON_ENUMERATION_PREFIXES
 from .serializers import _artifact_key_from_tls_result
 
 if TYPE_CHECKING:
-    from backend.discovery import AmassEnumerator, DNSxValidator, PortScanner, TLSProbe
+    pass
 
 logger = logging.getLogger(__name__)
 
