@@ -17,6 +17,7 @@ opening the relevant mixin file.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 import uuid
@@ -318,8 +319,10 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
                 await session.execute(text("LOAD 'age'"))
                 await session.execute(text('SET search_path = ag_catalog, "$user", public'))
 
-                query1 = f"SELECT * FROM cypher('aegis_network_graph', $$ MERGE (d:Domain {{name: '{target}'}}) $$) as (v agtype);"
-                await session.execute(text(query1))  # nosemgrep
+                query1 = text(
+                    "SELECT * FROM cypher('aegis_network_graph', $$ MERGE (d:Domain {name: $target}) $$, CAST(:params AS agtype)) as (v agtype);"
+                )
+                await session.execute(query1, {"params": json.dumps({"target": target})})
 
                 for asset in assets:
                     if not asset.ip_address:
@@ -329,18 +332,27 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
                     service = asset.service_type.value if asset.service_type else "unknown"
                     hostname = asset.hostname or target
 
-                    query2 = f"""
+                    query2 = text("""
                         SELECT * FROM cypher('aegis_network_graph', $$
-                            MATCH (d:Domain {{name: '{target}'}})
-                            MERGE (h:Domain {{name: '{hostname}'}})
-                            MERGE (i:IP {{address: '{ip}'}})
-                            MERGE (p:Port {{number: '{port}', service: '{service}'}})
-                            MERGE (d)-[\:SUBDOMAIN]->(h)
-                            MERGE (h)-[\:RESOLVES_TO]->(i)
-                            MERGE (i)-[\:EXPOSES]->(p)
-                        $$) as (v agtype);
-                    """
-                    await session.execute(text(query2))  # nosemgrep
+                            MATCH (d:Domain {name: $target})
+                            MERGE (h:Domain {name: $hostname})
+                            MERGE (i:IP {address: $ip})
+                            MERGE (p:Port {number: $port, service: $service})
+                            MERGE (d)-[:SUBDOMAIN]->(h)
+                            MERGE (h)-[:RESOLVES_TO]->(i)
+                            MERGE (i)-[:EXPOSES]->(p)
+                        $$, CAST(:params AS agtype)) as (v agtype);
+                    """)
+                    params2 = json.dumps(
+                        {
+                            "target": target,
+                            "hostname": hostname,
+                            "ip": str(ip),
+                            "port": port,
+                            "service": service,
+                        }
+                    )
+                    await session.execute(query2, {"params": params2})
 
                 await session.commit()
         except Exception:
