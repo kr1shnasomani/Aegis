@@ -226,12 +226,12 @@ export const ScanQueueProvider = ({ children }: { children: ReactNode }) => {
             const detail = status.stage_detail ?? nextItem.target;
             const stageName = stageDisplayName(status.stage);
             const assetsDiscovered = status.progress?.assets_discovered ?? 0;
-            const snapshot = `${stageName}|${detail}|${etaLabel ?? 'n/a'}|${assetsDiscovered}`;
+            const snapshot = `${stageName}|${detail}|${etaLabel ?? 'n/a'}`;
             const previous = lastStageSnapshotRef.current.get(scanId);
             if (snapshot !== previous) {
               lastStageSnapshotRef.current.set(scanId, snapshot);
               addLog(
-                `${stageName}: ${detail}${etaLabel ? ` (ETA ${etaLabel})` : ''} · assets discovered: ${assetsDiscovered}`,
+                `${stageName}: ${detail}${etaLabel ? ` (ETA ${etaLabel})` : ''}`,
               );
             }
 
