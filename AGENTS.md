@@ -28,9 +28,10 @@ Hard rule:
 
 ## 3) Runtime and Environment Reality
 
-Current default runtime is local deterministic mode.
+Current default runtime is local deterministic mode, but EVERYTHING MUST BE RUN VIA DOCKER.
 
 Important facts:
+0. STRICT RULE: No local environments (no local `node_modules`, no local `.venv` or `venv`). All execution, building, and testing must be run exclusively via Docker to prevent supply chain attacks. Remove any rogue `node_modules` or `venv` folders encountered.
 1. Root .env is intentionally tracked.
 2. Cloud API keys are not required for standard local scan operation.
 3. Deterministic scoring and compliance logic must remain non-LLM.
@@ -73,8 +74,8 @@ Minimum validation before completion:
 
 Preferred checks:
 1. docker compose exec -T backend pytest -q <tests>
-2. cd frontend && npm run build
-3. simulation/run.py for pipeline behavior spot-check when relevant
+2. docker compose exec -T frontend npm run build
+3. docker compose exec -T backend python simulation/run.py
 
 ## 8) Data and Migration Safety
 

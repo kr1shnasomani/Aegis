@@ -52,6 +52,25 @@ Once the containers are running, you can access the services here:
 
 ---
 
+## 4. Generate the Codebase Knowledge Graph (Graphify)
+
+Aegis uses [Graphify](https://github.com/safishamsi/graphify) to maintain an interactive 3D architecture map and codebase knowledge graph. 
+
+To generate the `graphify-out` folder locally:
+
+1. Install the `graphifyy` package:
+   ```bash
+   pipx install graphifyy
+   # or with uv: uv tool install graphifyy
+   ```
+2. Build the graph for the codebase:
+   ```bash
+   graphify update .
+   ```
+This will extract all codebase architecture paths and generate `graphify-out/graph.html` which you can open in any browser.
+
+---
+
 ## Common Operational Commands
 
 **View System Logs:**
