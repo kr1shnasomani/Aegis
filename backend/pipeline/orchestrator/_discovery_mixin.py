@@ -775,6 +775,8 @@ class DiscoveryMixin:
                 return await self.tls_probe.probe(target)
 
         probe_tasks = [asyncio.create_task(_probe_with_limit(target)) for target in tls_targets]
+        if not probe_tasks:
+            return []
         done, _pending = await asyncio.wait(probe_tasks)
         tls_results: list[TLSProbeResult] = []
         for task, tls_target in zip(probe_tasks, tls_targets, strict=True):

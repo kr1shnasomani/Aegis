@@ -24,13 +24,6 @@ const scanProfiles = [
     description: 'Heavy-duty discovery. Runs a full port scan (1-65535) and aggressively hunts for subdomains.',
     features: ['All 65,535 TCP ports', 'Full subdomain brute-force', 'Expanded attack surface'],
   },
-  {
-    key: 'PQC Focus',
-    title: 'PQC Focus',
-    tagline: 'Specialized',
-    description: 'Skips deep discovery (no subdomains, bounded ports) to focus purely on finding deep cryptographic inventory.',
-    features: ['Root domain focus', 'Deep cryptographic analysis', 'Post-Quantum migration data'],
-  },
 ] as const;
 
 
@@ -105,7 +98,7 @@ const Scanner = () => {
           </p>
         </div>
 
-        <div className="w-full rounded-xl border border-[hsl(var(--border-default))] bg-background px-3 py-2.5 focus-within:ring-2 focus-within:ring-[hsl(var(--accent-amber))] transition-shadow mb-3">
+        <div className="w-full rounded-xl border border-[hsl(var(--border-default))] bg-background/80 backdrop-blur-md px-3 py-2.5 focus-within:ring-2 focus-within:ring-[hsl(var(--accent-amber))] transition-shadow mb-3">
           <input
             value={targetInput}
             onChange={(event) => setTargetInput(event.target.value)}
@@ -117,7 +110,7 @@ const Scanner = () => {
 
 
         {/* 3 Clean Modes Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {scanProfiles.map((profile) => {
             const isSelected = scanProfile === profile.key;
             return (
@@ -127,8 +120,8 @@ const Scanner = () => {
                 className={cn(
                   "relative flex flex-col rounded-xl border p-4 cursor-pointer transition-all duration-200",
                   isSelected
-                    ? "border-[hsl(var(--brand-primary))] bg-[hsl(var(--brand-primary)/0.03)] shadow-sm"
-                    : "border-[hsl(var(--border-default))] bg-[hsl(var(--bg-sunken))] hover:border-[hsl(var(--border-strong))]"
+                    ? "border-[hsl(var(--brand-primary))] bg-[hsl(var(--brand-primary)/0.08)] backdrop-blur-md shadow-sm"
+                    : "border-[hsl(var(--border-default))] bg-[hsl(var(--bg-sunken)/0.7)] backdrop-blur-md hover:border-[hsl(var(--border-strong))]"
                 )}
               >
                 <div className="flex justify-between items-start mb-2">

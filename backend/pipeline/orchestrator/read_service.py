@@ -4,10 +4,12 @@ ScanReadService — read-only query helpers for scan status and compiled results
 
 from __future__ import annotations
 
+import re
 import uuid
 from datetime import UTC, datetime
 from typing import Any, Sequence
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from backend.core.database import async_session_factory
@@ -15,7 +17,7 @@ from backend.models.crypto_assessment import CryptoAssessment
 from backend.models.discovered_asset import DiscoveredAsset
 from backend.models.certificate_chain import CertificateChain
 from backend.models.dns_record import DNSRecord
-from backend.models.enums import ScanStatus, ServiceType, ComplianceTier
+from backend.models.enums import ScanStatus, ServiceType, ComplianceTier, CertLevel
 from backend.models.scan_job import ScanJob
 from backend.models.scan_event import ScanEvent
 from backend.models.remediation_action import RemediationAction
@@ -34,6 +36,7 @@ from backend.repositories import (
 from .exceptions import ScanNotFoundError
 from .models import ScanRuntimeStore, ETA_STAGE_WEIGHTS_SECONDS, ETA_STAGE_ORDER
 from .serializers import (
+    select_latest,
     select_latest_cbom,
     select_latest_certificate,
     select_latest_remediation,
@@ -51,6 +54,7 @@ from .serializers import (
     serialize_persisted_scan_event,
     _normalize_hostname,
     extract_subject_cn,
+    build_asset_fingerprint_key,
 )
 
 class ScanReadService:

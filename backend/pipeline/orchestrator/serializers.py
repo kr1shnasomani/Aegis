@@ -5,6 +5,7 @@ Serializer and selector helpers for orchestrator read models.
 from __future__ import annotations
 
 import re
+import uuid
 from datetime import UTC, datetime
 from typing import Any, Callable, Sequence
 

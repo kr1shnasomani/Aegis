@@ -155,7 +155,7 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
         if not profile:
             return True
         normalized = profile.lower()
-        # "Deep" implies enumeration. "Quick" and "PQC Focus" skip it.
+        # "Deep" implies enumeration. "Quick" skips it.
         if "deep" in normalized or "full enumeration" in normalized:
             return False
         return True

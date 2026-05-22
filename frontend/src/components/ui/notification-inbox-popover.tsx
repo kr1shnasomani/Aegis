@@ -80,7 +80,7 @@ function NotificationInboxPopover() {
         <button className="relative h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-sunken transition-colors">
           <Bell className="w-4 h-4" />
           {unreadCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] bg-status-critical text-white border-none">
+            <Badge className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 flex items-center justify-center text-[10px] leading-none bg-status-critical text-white border-none">
               {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>
           )}

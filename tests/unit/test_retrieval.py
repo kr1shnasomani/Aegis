@@ -54,7 +54,7 @@ def test_default_and_overridden_top_k_are_honored(tmp_path: Path) -> None:
     assert len(service.search("quantum guidance", top_k=2)) == 2
 
 
-def test_missing_corpus_raises_explicit_setup_error(tmp_path: Path) -> None:
+def test_missing_corpus_returns_empty_list(tmp_path: Path) -> None:
     service = RetrievalService(
         client=QdrantClient(":memory:"),
         collection_name="phase6_missing_docs",
@@ -62,8 +62,8 @@ def test_missing_corpus_raises_explicit_setup_error(tmp_path: Path) -> None:
         default_top_k=5,
     )
 
-    with pytest.raises(CorpusSetupError, match="Local corpus directory does not exist"):
-        service.load_documents(tmp_path / "missing")
+    docs = service.load_documents(tmp_path / "missing")
+    assert docs == []
 
 
 def test_chunk_metadata_preserves_sections_when_available(tmp_path: Path) -> None:

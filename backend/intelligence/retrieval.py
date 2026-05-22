@@ -127,7 +127,13 @@ class RetrievalService:
     ) -> IngestionSummary:
         """Embed prepared chunks and write them to Qdrant."""
         if not chunks:
-            raise CorpusSetupError("No corpus chunks were generated for ingestion.")
+            logger.warning("No corpus chunks were generated for ingestion. Skipping upsert.")
+            return IngestionSummary(
+                collection_name=self.collection_name,
+                documents_ingested=documents_ingested,
+                chunks_ingested=0,
+                vector_size=0,
+            )
 
         vectors = self.embedding_provider.embed([chunk.text for chunk in chunks])
         vector_size = len(vectors[0])
@@ -230,7 +236,8 @@ class RetrievalService:
     def load_documents(self, source_dir: Path) -> list[_LoadedDocument]:
         """Load supported local documents from the configured corpus directory."""
         if not source_dir.exists():
-            raise CorpusSetupError(f"Local corpus directory does not exist: {source_dir}")
+            logger.warning(f"Local corpus directory does not exist: {source_dir}. Skipping ingestion.")
+            return []
 
         files = sorted(
             path
