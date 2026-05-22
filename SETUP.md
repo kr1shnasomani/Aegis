@@ -87,7 +87,7 @@ docker compose logs -f frontend
 **Run a Terminal Verification Scan:**
 To verify the scanning engine is working without using the UI:
 ```bash
-docker compose exec backend python simulation/run.py --target sc.com --skip-enumeration
+docker compose exec backend python simulation/run.py --target <url> --skip-enumeration
 ```
 
 ## Scan Modes and When to Use Them
