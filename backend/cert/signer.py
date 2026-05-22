@@ -56,7 +56,6 @@ _MAX_BROKEN_ALGORITHMS_LENGTH = 192
 _OPENSSL_TIMEOUT_SECONDS = 20.0
 
 
-
 class CertificateSigner:
     """Issue and persist Aegis X.509 compliance certificates."""
 

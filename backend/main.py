@@ -47,13 +47,17 @@ async def _reconcile_inflight_scans_on_startup() -> None:
     """
     async with async_session_factory() as session:
         rows = (
-            await session.execute(
-                select(ScanJob).where(
-                    ScanJob.status.in_([ScanStatus.PENDING, ScanStatus.RUNNING]),
-                    ScanJob.completed_at.is_(None),
+            (
+                await session.execute(
+                    select(ScanJob).where(
+                        ScanJob.status.in_([ScanStatus.PENDING, ScanStatus.RUNNING]),
+                        ScanJob.completed_at.is_(None),
+                    )
                 )
             )
-        ).scalars().all()
+            .scalars()
+            .all()
+        )
 
         if not rows:
             return

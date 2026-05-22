@@ -438,9 +438,7 @@ class PipelineOrchestrator(DiscoveryMixin, PersistenceMixin, AssessmentMixin):
                                 message=event.message,
                             )
                     except Exception:
-                        logger.exception(
-                            "Failed to persist scan event for scan %s.", scan_id
-                        )
+                        logger.exception("Failed to persist scan event for scan %s.", scan_id)
                 await session.commit()
         except Exception:
             logger.exception("Failed to persist runtime events for scan %s.", scan_id)

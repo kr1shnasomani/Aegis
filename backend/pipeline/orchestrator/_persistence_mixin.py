@@ -347,4 +347,3 @@ class PersistenceMixin:
             "asn": payload.get("asn") or None,
             "isp": payload.get("org") or None,
         }
-

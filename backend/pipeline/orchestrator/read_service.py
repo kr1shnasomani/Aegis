@@ -54,6 +54,7 @@ from .serializers import (
     build_asset_fingerprint_key,
 )
 
+
 class ScanReadService:
     """Read-side helpers for scan status, compiled results, and artifact retrieval."""
 
@@ -746,7 +747,9 @@ class ScanReadService:
             "standard": "standard" in normalized,
             "full_port_scan": "full port scan" in normalized or "deep" in normalized,
             "bounded_port_scan": "bounded port scan" in normalized,
-            "full_enumeration": "full enumeration" in normalized or "deep" in normalized or "standard" in normalized,
+            "full_enumeration": "full enumeration" in normalized
+            or "deep" in normalized
+            or "standard" in normalized,
             "no_enumeration": "no enumeration" in normalized or "pqc focus" in normalized,
         }
 
@@ -799,7 +802,9 @@ class ScanReadService:
         # Streaming stages don't have stable denominator early on; hide ETA until
         # enough runtime signal is available to avoid misleading ranges.
         if current_stage in {"enumerating_domains", "scanning_ports", "probing_tls"}:
-            if (stage_detail is None or stage_detail.strip().lower() == "streaming") and elapsed_seconds < 120:
+            if (
+                stage_detail is None or stage_detail.strip().lower() == "streaming"
+            ) and elapsed_seconds < 120:
                 return {
                     "estimated_total_seconds": None,
                     "estimated_remaining_seconds": None,
@@ -949,5 +954,3 @@ class ScanReadService:
             "events": runtime_events,
             "degraded_modes": degraded_modes,
         }
-
-

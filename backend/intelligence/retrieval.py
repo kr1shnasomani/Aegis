@@ -95,7 +95,6 @@ def _clean_openssl_env():
             os.environ["LD_LIBRARY_PATH"] = old_ld
 
 
-
 class RetrievalService:
     """Coordinate corpus ingestion and grounded retrieval against Qdrant."""
 
@@ -254,7 +253,9 @@ class RetrievalService:
     def load_documents(self, source_dir: Path) -> list[_LoadedDocument]:
         """Load supported local documents from the configured corpus directory."""
         if not source_dir.exists():
-            logger.warning(f"Local corpus directory does not exist: {source_dir}. Skipping ingestion.")
+            logger.warning(
+                f"Local corpus directory does not exist: {source_dir}. Skipping ingestion."
+            )
             return []
 
         files = sorted(
@@ -432,7 +433,6 @@ class RetrievalService:
         return CorpusChunk(chunk_id=chunk_hash, text=chunk_text, metadata=metadata)
 
 
-
 def build_citation_payload(chunks: Sequence[RetrievedChunk]) -> dict[str, Any]:
     """Return structured citations derived from retrieved chunks."""
     documents: list[dict[str, Any]] = []
@@ -483,7 +483,6 @@ def strip_headers_and_footers(text: str) -> str:
     counts = Counter(line for line in lines if line)
     cleaned = [line for line in lines if line and not (counts[line] > 2 and len(line.split()) <= 8)]
     return "\n".join(cleaned)
-
 
 
 def _normalize_reference_label(value: Any) -> str | None:

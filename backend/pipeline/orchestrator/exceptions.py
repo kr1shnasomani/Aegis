@@ -15,4 +15,3 @@ class ScanAlreadyRunningError(RuntimeError):
 
 class ScanAlreadyTerminalError(RuntimeError):
     """Raised when a terminal scan is dispatched again."""
-

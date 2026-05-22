@@ -716,5 +716,3 @@ class AssessmentMixin:
                 continue
             return as_text
         return None
-
-

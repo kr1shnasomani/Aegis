@@ -214,4 +214,3 @@ class ScanRuntimeStore:
 
     def remove_scan(self, scan_id: uuid.UUID) -> None:
         self._states.pop(scan_id, None)
-

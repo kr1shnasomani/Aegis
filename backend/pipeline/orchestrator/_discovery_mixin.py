@@ -837,9 +837,7 @@ class DiscoveryMixin:
             if scan_ipv6:
                 return tuple(addresses)
             ipv4_addresses = tuple(
-                address
-                for address in addresses
-                if ipaddress.ip_address(address).version == 4
+                address for address in addresses if ipaddress.ip_address(address).version == 4
             )
             return ipv4_addresses or tuple(addresses)
 
@@ -984,4 +982,3 @@ class DiscoveryMixin:
         if not reason:
             return "unknown"
         return reason[:180]
-
