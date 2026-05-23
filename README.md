@@ -47,12 +47,10 @@ Aegis continuously discovers assets, evaluates their cryptographic posture, and 
 
 Aegis supports scan profiles that trade off speed vs depth.
 
-1. **Fast Validation:** `Quick + Bounded Port Scan + No Enumeration`
-2. **Balanced Discovery:** `Deep + Bounded Port Scan + Full Enumeration`
-3. **Full-Fledge Deep Scan:** `Deep + Full Port Scan + Full Enumeration`
-4. **PQC-Focused Audit:** `PQC Focus + Bounded Port Scan + No Enumeration`
+1. **Quick:** Fast validation. Bounded port scan, skips subdomain enumeration.
+2. **Deep:** Comprehensive discovery. Full port scan (1-65535) and full subdomain enumeration.
 
-For very large domains, full-fledge scans can still be expensive. Aegis uses adaptive hostname/TLS prioritization, progressive deepening, and TLS-stage budgets to avoid indefinite probing while preserving high-value coverage first.
+For very large domains, Deep scans can still be expensive. Aegis uses adaptive hostname/TLS prioritization, progressive deepening, and TLS-stage budgets to avoid indefinite probing while preserving high-value coverage first.
 
 Detailed run examples and tuning flags are available in [SETUP.md](./SETUP.md).
 

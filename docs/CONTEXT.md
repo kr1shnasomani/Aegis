@@ -188,9 +188,8 @@ Important adapter concerns:
 
 Scanner is single-target per run.
 The UI exposes 3 primary profiles which dictate internal behavior natively (no manual toggles):
-1. Quick: Bounded ports, moderate enumeration. (Default)
-2. Deep: Full port scan (1-65535), full enumeration.
-3. PQC Focus: Skips enumeration, bounded ports, prioritizes crypto algorithms.
+1. Quick: Bounded ports, skips subdomain enumeration. (Default)
+2. Deep: Full port scan (1-65535), full subdomain enumeration.
 
 ## 9. API Surface Summary
 

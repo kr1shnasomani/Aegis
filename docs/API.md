@@ -68,8 +68,8 @@ Request body:
 ```json
 {
   "target": "example.com",
-  "scan_profile": "Quick + Full Port Scan",
-  "initiated_by": "frontend_scan_queue"
+  "scan_profile": "Quick",
+  "initiated_by": "api_client"
 }
 ```
 
@@ -258,9 +258,9 @@ Common scenarios:
 
 ## 7. Scanner Profile Notes
 
-Profile parsing is string-based and currently supports operational toggles embedded in scan_profile text:
-- full port/all ports tokens => enable full TCP sweep mode.
-- no enumeration token => disable broad subdomain enumeration.
+Profile parsing evaluates the exact string. The supported operational profiles are:
+- "Quick" => Skip broad subdomain enumeration, use bounded ports.
+- "Deep" => Enable broad subdomain enumeration, scan full ports (1-65535).
 
 Scanner UI submits one target per run.
 
