@@ -18,18 +18,8 @@ from typing import Any
 
 from qdrant_client import QdrantClient, models
 
-from backend.core.config import Settings, get_settings
 from .types import CorpusChunk, IngestionSummary, RetrievedChunk
-from .cloud_utils import call_cloud_api
-from .embeddings import (
-    CohereEmbeddingProvider,
-    FallbackEmbeddingProvider,
-    JinaEmbeddingProvider,
-    LocalDeterministicEmbeddingProvider,
-    OpenRouterEmbeddingProvider,
-    RetrievalError,
-    create_embedding_provider,
-)
+from .embeddings import RetrievalError
 
 try:
     from langchain_core.documents import Document as LangChainDocument
