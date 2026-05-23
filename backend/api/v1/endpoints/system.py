@@ -37,17 +37,13 @@ def _summarize_health(states: list[str]) -> str:
     return worst
 
 
-def _route_inventory(
-    request: Request, api_prefix: str
-) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+def _route_inventory(request: Request, api_prefix: str) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     api_endpoints: list[dict[str, object]] = []
     infra_endpoints: list[dict[str, object]] = []
     for route in request.app.routes:
         if not isinstance(route, APIRoute):
             continue
-        methods = sorted(
-            method for method in (route.methods or set()) if method not in {"HEAD", "OPTIONS"}
-        )
+        methods = sorted(method for method in (route.methods or set()) if method not in {"HEAD", "OPTIONS"})
         if not methods:
             continue
         record: dict[str, object] = {
@@ -61,9 +57,7 @@ def _route_inventory(
         else:
             infra_endpoints.append(record)
     api_endpoints.sort(key=lambda endpoint: (str(endpoint["path"]), ",".join(endpoint["methods"])))
-    infra_endpoints.sort(
-        key=lambda endpoint: (str(endpoint["path"]), ",".join(endpoint["methods"]))
-    )
+    infra_endpoints.sort(key=lambda endpoint: (str(endpoint["path"]), ",".join(endpoint["methods"])))
     return api_endpoints, infra_endpoints
 
 
@@ -144,7 +138,7 @@ async def get_system_health(request: Request) -> dict[str, object]:
         docs_file_count = sum(1 for item in docs_source.rglob("*") if item.is_file())
     docs_check = {
         "name": "docs_corpus",
-        "status": "healthy",
+        "status": "healthy" if docs_dir_exists and docs_file_count > 0 else "degraded",
         "details": {
             "path": str(docs_source),
             "exists": docs_dir_exists,
@@ -167,12 +161,8 @@ async def get_system_health(request: Request) -> dict[str, object]:
         "name": "app_runtime",
         "status": "healthy",
         "details": {
-            "scan_runtime_store_ready": bool(
-                getattr(request.app.state, "scan_runtime_store", None)
-            ),
-            "pipeline_orchestrator_ready": bool(
-                getattr(request.app.state, "pipeline_orchestrator", None)
-            ),
+            "scan_runtime_store_ready": bool(getattr(request.app.state, "scan_runtime_store", None)),
+            "pipeline_orchestrator_ready": bool(getattr(request.app.state, "pipeline_orchestrator", None)),
             "scan_read_service_ready": bool(getattr(request.app.state, "scan_read_service", None)),
             "active_scan_tasks": len(getattr(request.app.state, "scan_tasks", {})),
         },
@@ -183,8 +173,7 @@ async def get_system_health(request: Request) -> dict[str, object]:
     services = [backend_status, db_status, qdrant_status]
     system_checks = [docs_check, frontend_check, app_state_checks]
     overall = _summarize_health(
-        [str(service["status"]) for service in services]
-        + [str(check["status"]) for check in system_checks]
+        [str(service["status"]) for service in services] + [str(check["status"]) for check in system_checks]
     )
 
     return {
@@ -210,7 +199,9 @@ async def get_system_health(request: Request) -> dict[str, object]:
             "llm_provider_mode": settings.LLM_PROVIDER_MODE,
             "embedding_provider_mode": settings.EMBEDDING_PROVIDER_MODE,
             "rag_enabled": bool(
-                settings.QDRANT_URL and settings.QDRANT_COLLECTION_NAME and settings.DOCS_SOURCE_DIR
+                settings.QDRANT_URL
+                and settings.QDRANT_COLLECTION_NAME
+                and settings.DOCS_SOURCE_DIR
             ),
         },
     }

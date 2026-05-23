@@ -31,24 +31,6 @@ from .embeddings import (
     create_embedding_provider,
 )
 
-__all__ = [
-    "CorpusChunk",
-    "IngestionSummary",
-    "RetrievedChunk",
-    "call_cloud_api",
-    "CohereEmbeddingProvider",
-    "FallbackEmbeddingProvider",
-    "JinaEmbeddingProvider",
-    "LocalDeterministicEmbeddingProvider",
-    "OpenRouterEmbeddingProvider",
-    "RetrievalError",
-    "create_embedding_provider",
-    "RetrievalService",
-    "CorpusSetupError",
-    "Settings",
-    "get_settings",
-]
-
 try:
     from langchain_core.documents import Document as LangChainDocument
 except ImportError:  # pragma: no cover
@@ -93,6 +75,7 @@ def _clean_openssl_env():
             os.environ["OPENSSL_CONF"] = old_conf
         if old_ld is not None:
             os.environ["LD_LIBRARY_PATH"] = old_ld
+
 
 
 class RetrievalService:
@@ -144,13 +127,7 @@ class RetrievalService:
     ) -> IngestionSummary:
         """Embed prepared chunks and write them to Qdrant."""
         if not chunks:
-            logger.warning("No corpus chunks were generated for ingestion. Skipping upsert.")
-            return IngestionSummary(
-                collection_name=self.collection_name,
-                documents_ingested=documents_ingested,
-                chunks_ingested=0,
-                vector_size=0,
-            )
+            raise CorpusSetupError("No corpus chunks were generated for ingestion.")
 
         vectors = self.embedding_provider.embed([chunk.text for chunk in chunks])
         vector_size = len(vectors[0])
@@ -253,10 +230,7 @@ class RetrievalService:
     def load_documents(self, source_dir: Path) -> list[_LoadedDocument]:
         """Load supported local documents from the configured corpus directory."""
         if not source_dir.exists():
-            logger.warning(
-                f"Local corpus directory does not exist: {source_dir}. Skipping ingestion."
-            )
-            return []
+            raise CorpusSetupError(f"Local corpus directory does not exist: {source_dir}")
 
         files = sorted(
             path
@@ -433,6 +407,7 @@ class RetrievalService:
         return CorpusChunk(chunk_id=chunk_hash, text=chunk_text, metadata=metadata)
 
 
+
 def build_citation_payload(chunks: Sequence[RetrievedChunk]) -> dict[str, Any]:
     """Return structured citations derived from retrieved chunks."""
     documents: list[dict[str, Any]] = []
@@ -483,6 +458,7 @@ def strip_headers_and_footers(text: str) -> str:
     counts = Counter(line for line in lines if line)
     cleaned = [line for line in lines if line and not (counts[line] > 2 and len(line.split()) <= 8)]
     return "\n".join(cleaned)
+
 
 
 def _normalize_reference_label(value: Any) -> str | None:
