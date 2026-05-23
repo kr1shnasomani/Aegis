@@ -19,7 +19,14 @@ from typing import Any
 from qdrant_client import QdrantClient, models
 
 from .types import CorpusChunk, IngestionSummary, RetrievedChunk
-from .embeddings import RetrievalError
+from .embeddings import (
+    RetrievalError,
+    create_embedding_provider,  # noqa: F401
+    LocalDeterministicEmbeddingProvider,  # noqa: F401
+    JinaEmbeddingProvider,  # noqa: F401
+    CohereEmbeddingProvider,  # noqa: F401
+    OpenRouterEmbeddingProvider,  # noqa: F401
+)
 
 try:
     from langchain_core.documents import Document as LangChainDocument
