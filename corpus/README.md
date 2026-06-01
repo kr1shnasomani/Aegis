@@ -4,12 +4,12 @@ This directory contains project documentation assets that are used directly by t
 
 ## Structure
 
-- `docs/nist/`
+- `corpus/nist/`
   - Approved local corpus used by remediation retrieval and Qdrant ingestion.
 
 ## Corpus Documentation
 
-Use [docs/nist/README.md](docs/nist/README.md) for:
+Use [corpus/nist/README.md](corpus/nist/README.md) for:
 
 - supported source file formats
 - ingestion commands
@@ -18,6 +18,6 @@ Use [docs/nist/README.md](docs/nist/README.md) for:
 
 Canonical project references:
 
-- API: [documentations/API.md](../documentations/API.md)
-- Database: [documentations/DATABASE.md](../documentations/DATABASE.md)
-- Operational context: [documentations/CONTEXT.md](../documentations/CONTEXT.md)
+- API: [docs/API.md](../docs/API.md)
+- Database: [docs/DATABASE.md](../docs/DATABASE.md)
+- Operational context: [docs/CONTEXT.md](../docs/CONTEXT.md)

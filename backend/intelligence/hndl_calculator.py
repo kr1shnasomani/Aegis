@@ -22,7 +22,7 @@ QUBIT_REQUIREMENTS: dict[str, dict[str, Any]] = {
         "source": {
             "title": "Quantum Threat Reference",
             "section": "RSA-2048 logical qubit estimate",
-            "path": "docs/nist/roadmaps.txt",
+            "path": "corpus/nist/roadmaps.txt",
         },
     },
     "ECDH-P256": {
@@ -31,7 +31,7 @@ QUBIT_REQUIREMENTS: dict[str, dict[str, Any]] = {
         "source": {
             "title": "Quantum Threat Reference",
             "section": "ECDH-P256 logical qubit estimate",
-            "path": "docs/nist/roadmaps.txt",
+            "path": "corpus/nist/roadmaps.txt",
         },
     },
     "RSA-4096": {
@@ -40,7 +40,7 @@ QUBIT_REQUIREMENTS: dict[str, dict[str, Any]] = {
         "source": {
             "title": "Quantum Threat Reference",
             "section": "RSA-4096 logical qubit estimate",
-            "path": "docs/nist/roadmaps.txt",
+            "path": "corpus/nist/roadmaps.txt",
         },
     },
 }

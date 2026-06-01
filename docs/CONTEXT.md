@@ -187,7 +187,9 @@ Important adapter concerns:
 ## 8.3 Scanner UX behavior
 
 Scanner is single-target per run.
-Profile text encodes options such as full port scan and enumeration behavior.
+The UI exposes 3 primary profiles which dictate internal behavior natively (no manual toggles):
+1. Quick: Bounded ports, skips subdomain enumeration. (Default)
+2. Deep: Full port scan (1-65535), full subdomain enumeration.
 
 ## 9. API Surface Summary
 
@@ -257,13 +259,17 @@ Authoring rules:
 
 Primary ownership files:
 - backend/analysis/risk_scorer.py
-- backend/pipeline/orchestrator.py
+- backend/pipeline/orchestrator/runner.py (core pipeline logic)
+- backend/pipeline/orchestrator/_discovery_mixin.py (phase 3 execution)
+- backend/pipeline/orchestrator/_assessment_mixin.py (phase 5 execution)
+- backend/pipeline/orchestrator/read_service.py (read models)
 - backend/api/v1/schemas.py
 - backend/api/v1/endpoints/scans.py
 - backend/api/v1/endpoints/mission_control.py
 - frontend/src/contexts/SelectedScanContext.tsx
 - frontend/src/contexts/ScanQueueContext.tsx
 - frontend/src/lib/adapters.ts
+- frontend/src/pages/AssetDiscovery.tsx (new robust page)
 - frontend/src/pages/AssetDetail.tsx
 
 ## 15. Current Reality Snapshot

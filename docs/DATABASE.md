@@ -234,7 +234,7 @@ Expected collection:
 - aegis_nist_docs
 
 Corpus source:
-- docs/nist
+- corpus/nist
 
 Ingestion command:
 

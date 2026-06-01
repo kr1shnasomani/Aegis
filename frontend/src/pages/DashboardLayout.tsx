@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useScanContext } from '@/contexts/ScanContext';
 import { useScanQueue } from '@/contexts/ScanQueueContext';
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { X, Maximize2, Minimize2, CheckCircle2, Loader2, Clock, XCircle, StopCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 function formatEtaRange(lowerSeconds: number | null, upperSeconds: number | null): string | null {
   if (lowerSeconds === null && upperSeconds === null) return null;
@@ -209,10 +210,27 @@ const DashboardLayout = () => {
       )}
 
       {queueComplete && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="fixed bottom-24 right-6 z-[90] bg-[hsl(var(--status-safe)/0.1)] border border-[hsl(var(--status-safe)/0.3)] rounded-xl p-3">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={cn(
+          "fixed bottom-24 right-6 z-[90] border rounded-xl p-3",
+          queueComplete === 'success' ? "bg-[hsl(var(--status-safe)/0.1)] border-[hsl(var(--status-safe)/0.3)]" :
+          queueComplete === 'failed' ? "bg-[hsl(var(--status-critical)/0.1)] border-[hsl(var(--status-critical)/0.3)]" :
+          "bg-[hsl(var(--border-default)/0.5)] border-[hsl(var(--border-strong))]"
+        )}>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-[hsl(var(--status-safe))]" />
-            <span className="text-xs font-body font-semibold text-[hsl(var(--status-safe))]">Scan Queue Complete</span>
+            {queueComplete === 'success' && <CheckCircle2 className="w-4 h-4 text-[hsl(var(--status-safe))]" />}
+            {queueComplete === 'failed' && <XCircle className="w-4 h-4 text-[hsl(var(--status-critical))]" />}
+            {queueComplete === 'cancelled' && <StopCircle className="w-4 h-4 text-muted-foreground" />}
+            
+            <span className={cn(
+              "text-xs font-body font-semibold",
+              queueComplete === 'success' ? "text-[hsl(var(--status-safe))]" :
+              queueComplete === 'failed' ? "text-[hsl(var(--status-critical))]" :
+              "text-muted-foreground"
+            )}>
+              {queueComplete === 'success' ? 'Scan Queue Complete' :
+               queueComplete === 'failed' ? 'Scan Queue Failed' :
+               'Scan Queue Cancelled'}
+            </span>
           </div>
         </motion.div>
       )}

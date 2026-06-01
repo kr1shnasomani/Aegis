@@ -11,7 +11,6 @@ import secrets
 import shutil
 import subprocess
 import tempfile
-from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from threading import Lock
@@ -24,13 +23,22 @@ from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID, ObjectIdentifier
 
 from backend.compliance import ComplianceInput, RulesEngine
 from backend.core.config import Settings, get_settings
-from backend.models.crypto_assessment import CryptoAssessment
-from backend.models.discovered_asset import DiscoveredAsset
 from backend.models.enums import ComplianceTier
-from backend.models.remediation_bundle import RemediationBundle
 
 if TYPE_CHECKING:
     from backend.repositories.compliance_cert_repo import ComplianceCertificateRepository
+    from backend.models.discovered_asset import DiscoveredAsset
+    from backend.models.remediation_bundle import RemediationBundle
+
+from .asn1 import _OID_MAP, _encode_utf8_asn1
+from .exceptions import (
+    CertificateIssuanceError,
+    ComplianceTierMismatchError,
+    OQSConfigError,
+    OQSSubprocessError,
+    OQSUnavailableError,
+)
+from .models import CertificateRequest, IssuedCertificate, _CertificateIdentity, _OqsCapability
 
 logger = logging.getLogger(__name__)
 
@@ -44,67 +52,8 @@ _PQC_STATUS = {
     ComplianceTier.PQC_TRANSITIONING: "HYBRID",
     ComplianceTier.QUANTUM_VULNERABLE: "VULNERABLE",
 }
-_OID_MAP = {
-    "pqc_status": "1.3.6.1.4.1.55555.1.1",
-    "fips_compliant": "1.3.6.1.4.1.55555.1.2",
-    "broken_algorithms": "1.3.6.1.4.1.55555.1.3",
-    "remediation_bundle_id": "1.3.6.1.4.1.55555.1.4",
-}
 _MAX_BROKEN_ALGORITHMS_LENGTH = 192
 _OPENSSL_TIMEOUT_SECONDS = 20.0
-
-
-class CertificateIssuanceError(RuntimeError):
-    """Raised when certificate issuance cannot complete."""
-
-
-class ComplianceTierMismatchError(CertificateIssuanceError):
-    """Raised when stored and recomputed tiers disagree."""
-
-
-class OQSUnavailableError(CertificateIssuanceError):
-    """Raised when the OQS OpenSSL toolchain is unavailable."""
-
-
-class OQSSubprocessError(CertificateIssuanceError):
-    """Raised when an OQS subprocess invocation fails."""
-
-
-class OQSConfigError(CertificateIssuanceError):
-    """Raised when generated OQS configuration is invalid."""
-
-
-@dataclass(frozen=True, slots=True)
-class CertificateRequest:
-    """Input bundle required to issue one compliance certificate."""
-
-    asset: DiscoveredAsset
-    assessment: CryptoAssessment
-    remediation_bundle: RemediationBundle | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class IssuedCertificate:
-    """Issued certificate metadata returned by the signer."""
-
-    certificate_pem: str
-    signing_algorithm: str
-    valid_from: datetime
-    valid_until: datetime
-    extensions_json: dict[str, Any]
-
-
-@dataclass(frozen=True, slots=True)
-class _CertificateIdentity:
-    common_name: str
-    san_value: str
-    san_is_ip: bool
-
-
-@dataclass(frozen=True, slots=True)
-class _OqsCapability:
-    available: bool
-    reason: str
 
 
 class CertificateSigner:
@@ -737,64 +686,4 @@ class CertificateSigner:
         )
 
 
-def load_certificate(pem: str) -> x509.Certificate:
-    """Load a PEM certificate into a cryptography X.509 object."""
-    return x509.load_pem_x509_certificate(pem.encode("utf-8"))
-
-
-def _encode_utf8_asn1(payload: str) -> bytes:
-    raw = payload.encode("utf-8")
-    if len(raw) < 128:
-        length_bytes = bytes([len(raw)])
-    else:
-        encoded_length = []
-        remaining = len(raw)
-        while remaining:
-            encoded_length.append(remaining & 0xFF)
-            remaining >>= 8
-        encoded_length.reverse()
-        length_bytes = bytes([0x80 | len(encoded_length), *encoded_length])
-    return bytes([0x0C]) + length_bytes + raw
-
-
-def _decode_utf8_asn1(payload: bytes) -> str:
-    if not payload:
-        return ""
-    if payload[0] != 0x0C:
-        return payload.decode("utf-8")
-    first_length_byte = payload[1]
-    if first_length_byte < 0x80:
-        content_start = 2
-        content_length = first_length_byte
-    else:
-        length_of_length = first_length_byte & 0x7F
-        content_start = 2 + length_of_length
-        content_length = int.from_bytes(payload[2:content_start], byteorder="big")
-    return payload[content_start : content_start + content_length].decode("utf-8")
-
-
-def get_extension_payload(certificate: x509.Certificate, oid_name: str) -> str | None:
-    """Return a decoded UTF-8 payload for one custom Aegis extension."""
-    oid = ObjectIdentifier(_OID_MAP[oid_name])
-    try:
-        extension = certificate.extensions.get_extension_for_oid(oid)
-    except x509.ExtensionNotFound:
-        return None
-    value = extension.value
-    if isinstance(value, x509.UnrecognizedExtension):
-        return _decode_utf8_asn1(value.value)
-    return None
-
-
-__all__ = [
-    "CertificateIssuanceError",
-    "CertificateRequest",
-    "CertificateSigner",
-    "ComplianceTierMismatchError",
-    "IssuedCertificate",
-    "OQSConfigError",
-    "OQSSubprocessError",
-    "OQSUnavailableError",
-    "get_extension_payload",
-    "load_certificate",
-]
+__all__ = ["CertificateSigner"]

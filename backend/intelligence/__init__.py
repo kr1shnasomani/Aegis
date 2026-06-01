@@ -5,11 +5,11 @@ Phase 6 intelligence exports.
 from .hndl_calculator import HndlCalculationError, HndlCalculator, QUBIT_REQUIREMENTS
 from .patch_generator import PatchGenerator
 from .rag_orchestrator import RagOrchestrationError, RagOrchestrator
+from .embeddings import create_embedding_provider
 from .retrieval import (
     CorpusSetupError,
     RetrievalError,
     RetrievalService,
-    create_embedding_provider,
 )
 from .roadmap_generator import RoadmapGenerationError, RoadmapGenerator
 from .types import (

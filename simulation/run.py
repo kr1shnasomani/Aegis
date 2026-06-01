@@ -61,7 +61,7 @@ def _print_pretty_summary(output):
 
 async def main():
     parser = argparse.ArgumentParser(description="Run Aegis Pipeline locally.")
-    parser.add_argument("--target", required=True, help="Target domain (e.g. sc.com)")
+    parser.add_argument("--target", required=True, help="Target domain (e.g. <url>)")
     parser.add_argument("--skip-enumeration", action="store_true", help="Skip Amass/DNSx")
     parser.add_argument(
         "--full-port-scan", action="store_true", help="Enable full TCP port scanning mode"

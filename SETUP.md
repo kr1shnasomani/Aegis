@@ -52,6 +52,25 @@ Once the containers are running, you can access the services here:
 
 ---
 
+## 4. Generate the Codebase Knowledge Graph (Graphify)
+
+Aegis uses [Graphify](https://github.com/safishamsi/graphify) to maintain an interactive 3D architecture map and codebase knowledge graph. 
+
+To generate the `graphify-out` folder locally:
+
+1. Install the `graphifyy` package:
+   ```bash
+   pipx install graphifyy
+   # or with uv: uv tool install graphifyy
+   ```
+2. Build the graph for the codebase:
+   ```bash
+   graphify update .
+   ```
+This will extract all codebase architecture paths and generate `graphify-out/graph.html` which you can open in any browser.
+
+---
+
 ## Common Operational Commands
 
 **View System Logs:**
@@ -75,35 +94,27 @@ docker compose exec backend python simulation/run.py --target <url> --skip-enume
 
 Aegis supports multiple scan variations through `scan_profile`.
 
-### 1. Fast Validation (recommended default)
+### 1. Quick (recommended default)
 
 Use this for quick checks, parity validation, and CI smoke runs.
 
-- Profile example: `Standard + Bounded Port Scan + No Enumeration`
-- Behavior: scans bounded ports and only root/www hostnames
+- Profile example: `Quick`
+- Behavior: scans bounded ports, skips subdomain enumeration, focuses on root/www hostnames
 - Typical outcome: fast completion with deterministic top-level posture
 
 Terminal/API example:
 ```bash
-curl -s -X POST http://localhost:8000/api/v1/scan \
-	-H 'content-type: application/json' \
-	-d '{"target":"example.com","scan_profile":"Standard + Bounded Port Scan + No Enumeration"}'
+curl -X POST http://localhost:8000/api/v1/scan \
+	-H "Content-Type: application/json" \
+	-d '{"target":"example.com","scan_profile":"Quick"}'
 ```
 
-### 2. Balanced Discovery
-
-Use this for routine production checks where broader hostname coverage is needed.
-
-- Profile example: `Standard + Bounded Port Scan + Full Enumeration`
-- Behavior: bounded ports, broad hostname expansion
-- Notes: runtime depends on DNS size and CDN sprawl
-
-### 3. Full-Fledge / Deep Coverage
+### 2. Deep Coverage
 
 Use this for investigations and periodic deep assessments.
 
-- Profile example: `Deep + Full Port Scan + Full Enumeration`
-- Behavior: full TCP port scan + broad subdomain enumeration
+- Profile example: `Deep`
+- Behavior: full TCP port scan (1-65535) + broad subdomain enumeration
 - Notes: this is the most expensive mode; runtime scales with target size
 
 Practical guidance for very large domains:
@@ -111,13 +122,6 @@ Practical guidance for very large domains:
 1. Prefer running deep scans during low-traffic windows.
 2. Keep deterministic mode (`LLM_PROVIDER_MODE=local`, `EMBEDDING_PROVIDER_MODE=local`) for stable throughput.
 3. Use scan events and ETA range in UI/API to monitor progression by stage.
-
-### 4. PQC-Focused Audit
-
-Use this when cryptographic posture and migration planning are the primary concern.
-
-- Profile example: `PQC Focus + Bounded Port Scan + No Enumeration`
-- Behavior: narrower surface with cryptography-heavy analysis output
 
 ## Runtime Guardrails for Large Scans
 
