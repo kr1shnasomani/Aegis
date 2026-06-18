@@ -105,7 +105,9 @@ jobs:
           pip install pip-audit
 
       - name: Audit Python dependencies
-        run: pip-audit -r requirements.txt
+        # GHSA-537c-gmf6-5ccf: cryptography fix requires >=48.0.1 but sslyze 6.x caps it at <47.
+        # Ignored until sslyze releases a version supporting cryptography>=48.
+        run: pip-audit -r requirements.txt --ignore-vuln GHSA-537c-gmf6-5ccf
 
       - name: Install frontend dependencies
         working-directory: ./frontend
