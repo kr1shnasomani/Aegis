@@ -22,12 +22,15 @@ on:
       - 'requirements.txt'
       - '.github/workflows/backend-ci.yml'
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Start Database and Qdrant Services
         run: docker compose up -d postgres qdrant
